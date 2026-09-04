@@ -1008,7 +1008,10 @@ fi
 if [ -f /opt/glm53/patch_spinwait.py ]; then
     python3 /opt/glm53/patch_spinwait.py
 fi
-if [ -f /opt/glm53/patch_indexer_workspace.py ]; then
+# Opt-in: the image ships vLLM's unmodified indexer.py; the workspace patch is
+# applied only for GLM53_INDEXER_WORKSPACE=rightsize (literal match, like the
+# launcher's enum guard), so a stock boot runs byte-identical stock code.
+if [ -f /opt/glm53/patch_indexer_workspace.py ] && [ "${GLM53_INDEXER_WORKSPACE-}" = "rightsize" ]; then
     python3 /opt/glm53/patch_indexer_workspace.py
 fi
 if [ -f /opt/glm53/patch_ablit.py ]; then
@@ -1104,7 +1107,10 @@ fi
 if [ -f /opt/glm53/patch_spinwait.py ]; then
     python3 /opt/glm53/patch_spinwait.py
 fi
-if [ -f /opt/glm53/patch_indexer_workspace.py ]; then
+# Opt-in: the image ships vLLM's unmodified indexer.py; the workspace patch is
+# applied only for GLM53_INDEXER_WORKSPACE=rightsize (literal match, like the
+# launcher's enum guard), so a stock boot runs byte-identical stock code.
+if [ -f /opt/glm53/patch_indexer_workspace.py ] && [ "${GLM53_INDEXER_WORKSPACE-}" = "rightsize" ]; then
     python3 /opt/glm53/patch_indexer_workspace.py
 fi
 if [ -f /opt/glm53/patch_ablit.py ]; then

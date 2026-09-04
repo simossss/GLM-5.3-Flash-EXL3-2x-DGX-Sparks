@@ -471,9 +471,11 @@ RUN python3 /opt/glm53/patch_scheduler_decode_floor.py
 RUN python3 /opt/glm53/patch_hybrid_prefix_hit.py
 RUN python3 /opt/glm53/patch_xgrammar_termination.py
 RUN python3 /opt/glm53/patch_kpool_tail_slotmap.py
-# Applied unconditionally; the injected sizing reads GLM53_INDEXER_WORKSPACE
-# at runtime and returns the stock expression unless it is "rightsize".
-RUN python3 /opt/glm53/patch_indexer_workspace.py
+# Preflight only (the anchors must match the installed vLLM). The patch itself is
+# applied by start.sh inside the container, and only when
+# GLM53_INDEXER_WORKSPACE=rightsize, so a stock boot serves vLLM's unmodified
+# indexer.py -- the same handling as patch_spinwait.py below.
+RUN python3 /opt/glm53/patch_indexer_workspace.py --preflight
 RUN python3 /opt/glm53/patch_spinwait.py --preflight
 RUN python3 /opt/glm53/patch_ablit.py
 

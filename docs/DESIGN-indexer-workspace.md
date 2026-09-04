@@ -164,7 +164,12 @@ workspace deliberately.
   mismatch is visible in the receipts rather than inferred.
 * **Default off.** With the knob unset or `stock`,
   `get_max_prefill_buffer_size` returns `max_model_len * 40` and logs nothing.
-  The image can carry the overlay and serve exactly stock.
+  Since the opt-in-apply change the image only preflights the anchors and
+  `start.sh` applies the patch inside the container solely for `rightsize`,
+  so a stock boot runs vLLM's unmodified `indexer.py`, not an equivalent
+  patched one. (A 4x DGX Spark TP=4 deployment reproduced a multi-rank prefill
+  stall with the patched file in place under stock mode and not with the
+  pristine file; the mechanism is unexplained, see MiaAI-Lab PR #115.)
 
 ## 6. Expected gain — and what this PR does not claim
 

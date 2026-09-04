@@ -797,9 +797,17 @@ def test_recipe_wiring_if_present() -> None:
     assert '_glm53_validate_enum GLM53_INDEXER_WORKSPACE' in launcher
     assert '-e "GLM53_INDEXER_WORKSPACE=$GLM53_INDEXER_WORKSPACE"' in launcher
     assert launcher.count("python3 /opt/glm53/patch_indexer_workspace.py") == 2
+    # Applied inside the container only for rightsize (literal match); a stock
+    # boot serves vLLM's unmodified indexer.py.
+    assert launcher.count(
+        '[ -f /opt/glm53/patch_indexer_workspace.py ] '
+        '&& [ "${GLM53_INDEXER_WORKSPACE-}" = "rightsize" ]'
+    ) == 2
     assert "COPY overlay/patch_indexer_workspace.py" in image
     assert "COPY tests/test_indexer_workspace.py" in image
-    assert "RUN python3 /opt/glm53/patch_indexer_workspace.py" in image
+    # The image only preflights the anchors; it must not bake the patch in.
+    assert "RUN python3 /opt/glm53/patch_indexer_workspace.py --preflight" in image
+    assert "RUN python3 /opt/glm53/patch_indexer_workspace.py\n" not in image
     assert "python3 /opt/glm53/test_indexer_workspace.py" in image
     if readme.is_file():
         text = readme.read_text()
